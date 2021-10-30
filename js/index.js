@@ -1,6 +1,6 @@
 $(document).ready(function() {
   $('#sec-1').addClass('active');
-
+  
   $('#sec-1').click(function() {
     $('html, body').animate({
       scrollTop: $('#one').offset().top - 144
@@ -26,20 +26,27 @@ $(document).ready(function() {
     return false;
   });
 
-  $('#two').waypoint(function() {
-    $('.container ul li').children().removeClass('active');
-    $('#sec-2').addClass('active');
-  }, { offset: 100 });
-  $('#three').waypoint(function() {
-    $('.container ul li').children().removeClass('active');
-    $('#sec-3').addClass('active');
-  }, { offset: 100 });
-  $('#four').waypoint(function() {
-    $('.container ul li').children().removeClass('active');
-    $('#sec-4').addClass('active');
-  }, { offset: 100 });
-  $('#one').waypoint(function() {
-    $('.container ul li').children().removeClass('active');
-    $('#sec-1').addClass('active');
-  }, { offset: 0 });
+  var options = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.60
+  }
+
+  function callback(entries) {
+    if(!entries[0].isIntersecting) {
+      return false;
+    }
+    $('.container ul li a').removeClass('active');
+    $(navigationSelectorQuery(entries[0].target.id)).addClass('active')
+  }
+
+  var observer = new IntersectionObserver(callback, options)
+  var targets = document.querySelectorAll('section div')
+  targets.forEach(function(target) {
+    observer.observe(target);
+  })
 });
+
+function navigationSelectorQuery(id) {
+  return ('nav a[href="#' + id + '"')
+}
